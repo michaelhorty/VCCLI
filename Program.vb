@@ -60,7 +60,7 @@ forceContinue:
                     End
                 End If
                 VC = New VC_Client
-                Call VC.getDynamicAnalyses(apiID, apiKey)
+                Call showDASTanalysis()
 
             Case "new_dast"
                 If Len(apiKey) = 0 Or Len(apiID) = 0 Then
@@ -88,6 +88,51 @@ forceContinue:
         End
     End Sub
 
+    Private Sub showDASTanalysis()
+        Dim dastAnalyses As List(Of dastAnalysis) = New List(Of dastAnalysis)
+        dastAnalyses = VC.getDynamicAnalyses(apiID, apiKey)
+
+        Console.WriteLine("NAME" + spaces(36) + "ANALYSIS_OCC_ID" + spaces(20) + "SCAN_ID" + spaces(30) + "END_TIME" + spaces(20) + "LINKED_APP" + spaces(20) + "FLAWS" + spaces(3) + "TARGET_URL" + spaces(20))
+        Console.WriteLine("----" + spaces(36) + "---------------" + spaces(20) + "-------" + spaces(30) + "--------" + spaces(20) + "----------" + spaces(20) + "-----" + spaces(3) + "----------" + spaces(20))
+
+        Dim rowNum As Integer = 1
+        Dim a$ = ""
+        Dim b$ = ""
+        Dim c$ = ""
+        Dim targetURL$ = ""
+
+        For Each D In dastAnalyses
+            With D
+                a$ = "" : b$ = "" : c$ = ""
+                a$ = .name + spaces(40 - Len(.name)) ' + .analysis_id + spaces(35 - Len(.analysis_id))
+                '                a$ = .name + spaces(40 - Len(.name)) + .number_of_scans.ToString + spaces(Len(10 - .number_of_scans.ToString)) + .analysis_id + spaces(35 - Len(.analysis_id))
+                rowNum = 1
+                For Each dA In .occurrenceS
+                    b$ = dA.analysis_occurrence_id + spaces(35 - Len(dA.analysis_occurrence_id))
+                    '                    b$ = dA.analysis_occurrence_id + spaces(35 - Len(dA.analysis_occurrence_id)) + dA.actual_end_date + spaces(25 - Len(dA.actual_end_date))
+
+                    For Each sD In .scansOfOccurrence
+                        If dA.analysis_occurrence_id = sD.analysis_occurrence_id Then
+                            targetURL$ = Replace(Replace(sD.target_url, "http://", ""), "https://", "")
+                            c$ = sD.scan_id + spaces(37 - Len(sD.scan_id)) + sD.end_date + spaces(28 - Len(sD.end_date)) + sD.linked_platform_app_name + spaces(30 - Len(sD.linked_platform_app_name)) + sD.total_flaw_count.ToString + spaces(8 - Len(sD.total_flaw_count.ToString)) + targetURL
+                            '                            c$ = sD.scan_id + spaces(40 - Len(sD.scan_id)) + sD.result_import_status + spaces(20 - Len(sD.result_import_status)) + sD.target_url + spaces(20 - Len(sD.target_url)) + sD.linked_platform_app_name
+                        End If
+                        If rowNum = 1 Then
+                            Console.WriteLine(a + b + c)
+                        Else
+                            Console.WriteLine(spaces(Len(a)) + b + c)
+                        End If
+                    Next
+
+
+                    rowNum += 1
+                Next
+            End With
+        Next
+
+
+    End Sub
+
     Private Sub showAppProfiles()
         Dim a$ = ""
         Dim b$ = ""
@@ -111,7 +156,7 @@ forceContinue:
 
     Public Sub getSecLabsSummary(apiToken$)
 
-        slClient = New SL_Client(secLabs_token) '"a110e3dbe24da430f9c0c38e:c140c2f01da2b7af8c40c891")
+        slClient = New SL_Client(secLabs_token)
         slClient.loadProgressAllUsers()
 
         Console.WriteLine("# of Lessons: " + slClient.moduleNames.Count.ToString)

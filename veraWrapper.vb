@@ -12,7 +12,9 @@ Public Class VC_Client
 
     End Sub
 
-    Public Sub getDynamicAnalyses(apiID$, apiKEY$)
+    Public Function getDynamicAnalyses(apiID$, apiKEY$) As List(Of dastAnalysis)
+        '        getDynamicAnalyses = New List(Of dastAnalysis)
+
         Dim urI$ = "/was/configservice/v1/analyses?size=500"
         Dim client = New RestClient("https://" + fqdN + urI)
         Dim request = New RestRequest(Method.GET)
@@ -39,9 +41,6 @@ Public Class VC_Client
         Console.WriteLine("Pulling Scans for " + dAnalysisOccurrences.Count.ToString + " Analysis Occurences..")
 
 
-        Console.WriteLine("NAME" + spaces(36) + "ANALYSIS_OCC_ID" + spaces(20) + "SCAN_ID" + spaces(30) + "END_TIME" + spaces(20) + "LINKED_APP" + spaces(20) + "TARGET_URL")
-        Console.WriteLine("----" + spaces(36) + "---------------" + spaces(20) + "-------" + spaces(30) + "--------" + spaces(20) + "----------" + spaces(20) + "----------")
-
         For Each D In dastAnalyses
             With D
                 D.occurrenceS = New List(Of dastAnalOccur)
@@ -51,45 +50,13 @@ Public Class VC_Client
                         D.scansOfOccurrence = getScansOfAnalysisOccurrences(apiID, apiKEY, dA.analysis_occurrence_id)
                     End If
                 Next
-                '                Console.WriteLine(.name + spaces(40 - Len(.name)) + .number_of_scans.ToString + spaces(Len(10 - .number_of_scans.ToString)) + .analysis_id)
             End With
         Next
 
-        Dim rowNum As Integer = 1
-        Dim a$ = ""
-        Dim b$ = ""
-        Dim c$ = ""
-
-        For Each D In dastAnalyses
-            With D
-                a$ = "" : b$ = "" : c$ = ""
-                a$ = .name + spaces(40 - Len(.name)) ' + .analysis_id + spaces(35 - Len(.analysis_id))
-                '                a$ = .name + spaces(40 - Len(.name)) + .number_of_scans.ToString + spaces(Len(10 - .number_of_scans.ToString)) + .analysis_id + spaces(35 - Len(.analysis_id))
-                rowNum = 1
-                For Each dA In .occurrenceS
-                    b$ = dA.analysis_occurrence_id + spaces(35 - Len(dA.analysis_occurrence_id))
-                    '                    b$ = dA.analysis_occurrence_id + spaces(35 - Len(dA.analysis_occurrence_id)) + dA.actual_end_date + spaces(25 - Len(dA.actual_end_date))
-
-                    For Each sD In .scansOfOccurrence
-                        If dA.analysis_occurrence_id = sD.analysis_occurrence_id Then
-                            c$ = sD.scan_id + spaces(37 - Len(sD.scan_id)) + sD.end_date + spaces(28 - Len(sD.end_date)) + sD.linked_platform_app_name + spaces(30 - Len(sD.linked_platform_app_name)) + sD.target_url
-                            '                            c$ = sD.scan_id + spaces(40 - Len(sD.scan_id)) + sD.result_import_status + spaces(20 - Len(sD.result_import_status)) + sD.target_url + spaces(20 - Len(sD.target_url)) + sD.linked_platform_app_name
-                        End If
-                        If rowNum = 1 Then
-                            Console.WriteLine(a + b + c)
-                        Else
-                            Console.WriteLine(spaces(Len(a)) + b + c)
-                        End If
-                    Next
+        Return dastAnalyses
 
 
-                    rowNum += 1
-                Next
-            End With
-        Next
-
-
-    End Sub
+    End Function
     Public Function getDynamicAnalysisOccurrences(apiID$, apiKEY$) As List(Of dastAnalOccur)
         Dim dAnal As New List(Of dastAnalOccur)
 
@@ -154,6 +121,8 @@ Public Class VC_Client
 
         If Len(appID) Then jsoN += c$ + "linked_platform_app_uuid" + c$ + ":" + c$ + appID + c$ + ","
 
+
+        'lame & lazy but obj structure is a heavier lift than this
         jsoN += c$ + "scan_config_request" + c$ + ":{" + c$ + "target_url" + c$ + ":{" + c$ + "url" + c$ + ":" + c$ + dastURL + c$ + "}}}],"
         jsoN += c$ + "schedule" + c$ + ":{" + c$ + "now" + c$ + ":true," + c$ + "duration" + c$ + ":{" + c$ + "length" + c$ + ":1," + c$ + "unit" + c$ + ":" + c$ + "DAY" + c$
         jsoN += "}}}"
@@ -215,6 +184,7 @@ Public Class VC_Client
 
 
     Private Function removePaging(json$) As String
+        removePaging = ""
         If Len(json) = 0 Then Exit Function
         json = Mid(json, 1, InStr(json, Chr(34) + "page" + Chr(34) + " :") - 1)
         Do Until Mid(json, Len(json), 1) = "]"
@@ -261,16 +231,16 @@ Public Class dastAnalOccur
 
 End Class
 
-Public Class dastDetail
-    Public name$
-    Public analysis_id$
-    Public number_of_scans As Integer
-    Public latest_scanid$
-    Public target_url$
-    Public linked_platform_app_uuid$
-    Public linked_platform_app_name$
-    Public result_import_status$
-End Class
+'Public Class dastDetail
+'    Public name$
+'    Public analysis_id$
+'    Public number_of_scans As Integer
+'    Public latest_scanid$
+'    Public target_url$
+'    Public linked_platform_app_uuid$
+'    Public linked_platform_app_name$
+'    Public result_import_status$
+'End Class
 
 Public Class scanDetail
     Public end_date$
