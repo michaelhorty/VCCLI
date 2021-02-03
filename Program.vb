@@ -92,8 +92,8 @@ forceContinue:
         Dim dastAnalyses As List(Of dastAnalysis) = New List(Of dastAnalysis)
         dastAnalyses = VC.getDynamicAnalyses(apiID, apiKey)
 
-        Console.WriteLine("NAME" + spaces(36) + "ANALYSIS_OCC_ID" + spaces(20) + "SCAN_ID" + spaces(30) + "END_TIME" + spaces(20) + "LINKED_APP" + spaces(20) + "FLAWS" + spaces(3) + "TARGET_URL" + spaces(20))
-        Console.WriteLine("----" + spaces(36) + "---------------" + spaces(20) + "-------" + spaces(30) + "--------" + spaces(20) + "----------" + spaces(20) + "-----" + spaces(3) + "----------" + spaces(20))
+        Console.WriteLine("NAME" + spaces(36) + "ANALYSIS_OCC_ID" + spaces(20) + "SCAN_ID" + spaces(30) + "END_TIME" + spaces(20) + "LINKED_APP" + spaces(18) + "FLAWS" + spaces(5) + "TARGET_URL" + spaces(18) + "STATUS")
+        Console.WriteLine("----" + spaces(36) + "---------------" + spaces(20) + "-------" + spaces(30) + "--------" + spaces(20) + "----------" + spaces(18) + "-----" + spaces(5) + "----------" + spaces(18) + "------")
 
         Dim rowNum As Integer = 1
         Dim a$ = ""
@@ -113,8 +113,8 @@ forceContinue:
 
                     For Each sD In .scansOfOccurrence
                         If dA.analysis_occurrence_id = sD.analysis_occurrence_id Then
-                            targetURL$ = Replace(Replace(sD.target_url, "http://", ""), "https://", "")
-                            c$ = sD.scan_id + spaces(37 - Len(sD.scan_id)) + sD.end_date + spaces(28 - Len(sD.end_date)) + sD.linked_platform_app_name + spaces(30 - Len(sD.linked_platform_app_name)) + sD.total_flaw_count.ToString + spaces(8 - Len(sD.total_flaw_count.ToString)) + targetURL
+                            targetURL$ = Mid(Replace(Replace(sD.target_url, "http://", ""), "https://", ""), 1, 25)
+                            c$ = sD.scan_id + spaces(37 - Len(sD.scan_id)) + sD.end_date + spaces(28 - Len(sD.end_date)) + sD.linked_platform_app_name + spaces(30 - Len(sD.linked_platform_app_name)) + sD.total_flaw_count.ToString + spaces(8 - Len(sD.total_flaw_count.ToString)) + targetURL + spaces(28 - Len(targetURL)) + sD.analysis_occurrence_status
                             '                            c$ = sD.scan_id + spaces(40 - Len(sD.scan_id)) + sD.result_import_status + spaces(20 - Len(sD.result_import_status)) + sD.target_url + spaces(20 - Len(sD.target_url)) + sD.linked_platform_app_name
                         End If
                         If rowNum = 1 Then

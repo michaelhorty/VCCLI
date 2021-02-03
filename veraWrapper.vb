@@ -90,7 +90,6 @@ Public Class VC_Client
         Dim client = New RestClient("https://" + fqdN + urI)
         Dim request = New RestRequest(Method.GET)
         Dim response As IRestResponse
-
         Dim H As New HmacAuthHeader
         Dim hmacHeader$ = H.CalculateAuthorizationHeader(apiID, apiKEY, fqdN, urI, "", "GET")
 
@@ -106,6 +105,7 @@ Public Class VC_Client
         'Console.WriteLine(jsoN)
 
         scanOcc = JsonConvert.DeserializeObject(Of List(Of scanDetail))(jsoN)
+        'Console.WriteLine("Received SCANDETAIL/scan_occurrences OF " + analID + " COUNT:" + scanOcc.Count.ToString)
 
         Return scanOcc
     End Function
@@ -231,16 +231,6 @@ Public Class dastAnalOccur
 
 End Class
 
-'Public Class dastDetail
-'    Public name$
-'    Public analysis_id$
-'    Public number_of_scans As Integer
-'    Public latest_scanid$
-'    Public target_url$
-'    Public linked_platform_app_uuid$
-'    Public linked_platform_app_name$
-'    Public result_import_status$
-'End Class
 
 Public Class scanDetail
     Public end_date$
@@ -250,6 +240,7 @@ Public Class scanDetail
     Public linked_platform_app_uuid$
     Public linked_platform_app_name$
     Public result_import_status$
+    Public analysis_occurrence_status$
     Public total_flaw_count As Long
     Public app_link_type$
 End Class
