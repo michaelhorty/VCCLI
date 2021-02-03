@@ -44,11 +44,11 @@ Public Class HmacAuthHeader
         Return GetAuthorizationScheme + " " + authorizationParam
     End Function
 
-    Public Function ToHexBinary(bytes As Byte()) As String
+    Protected Function ToHexBinary(bytes As Byte()) As String
         Return BitConverter.ToString(bytes).Replace("-", "")
     End Function
 
-    Public Function FromHexBinary(hexBinaryString$) As Byte()
+    Protected Function FromHexBinary(hexBinaryString$) As Byte()
         Dim bytes As Byte() = New Byte(hexBinaryString.Length \ 2 - 1) {}
         For i As Integer = 0 To hexBinaryString.Length - 1 Step 2
             bytes(i \ 2) = Byte.Parse(hexBinaryString(i).ToString() & hexBinaryString(i + 1).ToString(), System.Globalization.NumberStyles.HexNumber)
