@@ -5,7 +5,10 @@ Includes HMAC AUTHENTICATION as required by Veracode - original C# example inclu
 
 This small utility demonstrates basic usage of their API for AST and Security Labs. Requires RESTSHARP and NEWTONSOFT JSON libraries.
 
-USAGE: VCCLI action --param1 param1_value --param2 param2_value
+To run simply download files in folder: https://github.com/michaelhorty/VCCLI/tree/master/bin/Debug/netcoreapp3.1
+      VCCLI.exe is the CLI
+
+USAGE: VCCLI.exe action --param1 param1_value --param2 param2_value
 
 Try VCCLI HELP for list of Actions and their associated parameters.
 
