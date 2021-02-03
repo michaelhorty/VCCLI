@@ -12,7 +12,7 @@ Public Class VC_Client
 
     End Sub
 
-    Public Function getDynamicAnalyses(apiID$, apiKEY$) As List(Of dastAnalysis)
+    Public Function getDynamicAnalyses(apiID$, apiKEY$, Optional ByVal onlyThisDast$ = "") As List(Of dastAnalysis)
         '        getDynamicAnalyses = New List(Of dastAnalysis)
 
         Dim urI$ = "/was/configservice/v1/analyses?size=500"
@@ -35,21 +35,23 @@ Public Class VC_Client
 
         '        Console.WriteLine(jsoN)
 
-        Console.WriteLine("Pulling Analysis Occurrences with Analyses..")
+        If Len(onlyThisDast) = 0 Then Console.WriteLine("Pulling Analysis Occurrences with Analyses..")
         Dim dastAnalyses As List(Of dastAnalysis) = JsonConvert.DeserializeObject(Of List(Of dastAnalysis))(jsoN)
         Dim dAnalysisOccurrences As List(Of dastAnalOccur) = getDynamicAnalysisOccurrences(apiID, apiKEY)
-        Console.WriteLine("Pulling Scans for " + dAnalysisOccurrences.Count.ToString + " Analysis Occurences..")
+        If Len(onlyThisDast) = 0 Then Console.WriteLine("Pulling Scans for " + dAnalysisOccurrences.Count.ToString + " Analysis Occurences..")
 
 
         For Each D In dastAnalyses
             With D
                 D.occurrenceS = New List(Of dastAnalOccur)
+                If Len(onlyThisDast) And LCase(D.name) <> LCase(onlyThisDast) Then GoTo skipThisOne
                 For Each dA In dAnalysisOccurrences
                     If dA.analysis_id = D.analysis_id Then
                         D.occurrenceS.Add(dA)
                         D.scansOfOccurrence = getScansOfAnalysisOccurrences(apiID, apiKEY, dA.analysis_occurrence_id)
                     End If
                 Next
+skipThisOne:
             End With
         Next
 
@@ -60,6 +62,7 @@ Public Class VC_Client
     Public Function getDynamicAnalysisOccurrences(apiID$, apiKEY$) As List(Of dastAnalOccur)
         Dim dAnal As New List(Of dastAnalOccur)
 
+        Dim fqdN$ = "api.veracode.com"
         Dim urI$ = "/was/configservice/v1/analysis_occurrences?size=500"
         Dim client = New RestClient("https://" + fqdN + urI)
         Dim request = New RestRequest(Method.GET)
@@ -110,14 +113,13 @@ Public Class VC_Client
         Return scanOcc
     End Function
 
-    Public Sub newDAST(dastName$, dastURL$, apiID$, apiKEY$, Optional ByVal linkedAppUUID$ = "", Optional ByVal linkedAppName$ = "")
+    Public Sub newDAST(dastName$, dastURL$, apiID$, apiKEY$, Optional ByVal linkedAppUUID$ = "")
 
         Dim appID$ = ""
         Dim c$ = Chr(34)
         Dim jsoN$ = "{" + c$ + "name" + c$ + ":" + c$ + dastName + c$ + "," + c$ + "scans" + c$ + ":[{"
 
         If Len(linkedAppUUID) Then appID = linkedAppUUID
-        If Len(linkedAppName) Then appID = "lookitup"
 
         If Len(appID) Then jsoN += c$ + "linked_platform_app_uuid" + c$ + ":" + c$ + appID + c$ + ","
 
@@ -150,6 +152,32 @@ Public Class VC_Client
         Console.WriteLine(response.StatusCode.ToString + "/" + response.Content + " " + response.ErrorMessage + " " + response.StatusDescription)
     End Sub
 
+    Public Sub linkDAST(apiID$, apiKey$, appUUID$, dastScanID$)
+        Dim appID$ = ""
+        Dim c$ = Chr(34)
+        Dim jsoN$
+
+        jsoN = "{" + c$ + "linked_platform_app_uuid" + c$ + ":" + c$ + appUUID + c$ + "}"
+
+        Dim urI$ = "/was/configservice/v1/scans/" + dastScanID + "?method=PATCH"
+        Dim client = New RestClient("https://" + fqdN + urI)
+        Dim request = New RestRequest(Method.PUT)
+        Dim response As IRestResponse
+
+        Dim H As New HmacAuthHeader
+        Dim hmacHeader$ = H.CalculateAuthorizationHeader(apiID, apiKey, fqdN, urI, "", "PUT")
+
+        request.AddHeader("Host", fqdN)
+        request.AddHeader("Content-Type", "application/json")
+        request.AddHeader("Authorization", hmacHeader)
+        request.AddParameter("text/json", jsoN, ParameterType.RequestBody)
+        response = client.Execute(request)
+
+        Console.WriteLine("PAYLOAD:@" + urI + " >> " + jsoN)
+
+        Console.WriteLine(response.StatusCode.ToString + "/" + response.Content + " " + response.ErrorMessage + " " + response.StatusDescription)
+
+    End Sub
     Public Sub getAppProfiles(apiID$, apiKEY$)
         Dim urI$ = "/was/configservice/v1/platform_applications?size=500"
         Dim client = New RestClient("https://" + fqdN + urI)

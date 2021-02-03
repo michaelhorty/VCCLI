@@ -1,0 +1,16 @@
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.vbprojAssemblyReference.cache
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.AssemblyInfoInputs.cache
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.AssemblyInfo.vb
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.vbproj.CopyComplete
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.vbproj.CoreCompileInputs.cache
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\RestSharp.dll
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\CLI_SecLabs.genruntimeconfig.cache
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.exe
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.deps.json
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.runtimeconfig.json
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.runtimeconfig.dev.json
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.dll
+C:\Users\mhorty\source\repos\CLI_SecLabs\bin\Debug\netcoreapp3.1\VCCLI.pdb
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\VCCLI.dll
+C:\Users\mhorty\source\repos\CLI_SecLabs\obj\Debug\netcoreapp3.1\VCCLI.pdb

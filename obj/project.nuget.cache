@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "7knkKp3j/Cg3jCcry7YiWvP/cgk0NrJWVU0Z3jyxdFsUu9nL6PKO05W5TJoRjMC2EjLd6TVMbULiMunvqXesFA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mhorty\\source\\repos\\CLI_SecLabs\\CLI_SecLabs.vbproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mhorty\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\mhorty\\.nuget\\packages\\restsharp\\106.11.7\\restsharp.106.11.7.nupkg.sha512"
+  ],
+  "logs": []
+}

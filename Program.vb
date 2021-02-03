@@ -82,10 +82,52 @@ forceContinue:
 
                 Call VC.newDAST(argValue("--dast_name", args), argValue("--dast_url", args), apiID, apiKey, appUUID)
 
+            Case "link_dast"
+                If Len(apiKey) = 0 Or Len(apiID) = 0 Then
+                    Console.WriteLine("ERROR: Must provide --apiID and --apiKEY parameters")
+                    End
+                End If
+
+                VC = New VC_Client
+                Dim appUUID$ = argValue("--linkapp_UUID", args)
+                If Len(argValue("--linkapp_NAME", args)) Then
+                    Call VC.getAppProfiles(apiID, apiKey)
+                    For Each P In VC.appProfiles
+                        If LCase(P.name) = LCase(argValue("--linkapp_NAME", args)) Then
+                            appUUID = P.uuid
+                            ' Console.WriteLine(appUUID + "=" + P.uuid)
+                        End If
+                    Next
+                End If
+
+                Call linkDAST(appUUID, argValue("--dast_name", args))
         End Select
 
 
         End
+    End Sub
+
+    Private Sub linkDAST(appUUID$, dastName$)
+        Dim dastAnalyses As List(Of dastAnalysis) = New List(Of dastAnalysis)
+        dastAnalyses = VC.getDynamicAnalyses(apiID, apiKey, dastName)
+
+        Dim dNDX As Integer = 0
+        Dim appNDX As Integer = 0
+
+        For Each D In dastAnalyses
+            If LCase(dastName) = LCase(D.name) Then appNDX = dNDX
+            dNDX += 1
+        Next
+
+        If appNDX = 0 Then
+            Console.WriteLine("ERROR: No DAST named " + dastName + " found")
+            Exit Sub
+        End If
+
+        Dim scanID$ = dastAnalyses(appNDX).scansOfOccurrence(0).scan_id
+        Console.WriteLine("Linking APP " + appUUID + " to SCAN ID:" + scanID)
+        Call VC.linkDAST(apiID, apiKey, appUUID, scanID)
+
     End Sub
 
     Private Sub showDASTanalysis()
@@ -278,7 +320,7 @@ skipStudent:
         Console.WriteLine(fLine("get_dast", "Returns a summary of DAST analyses and scans"))
         Console.WriteLine(fLine("get_app_profiles", "Returns a summary of Application Profiles"))
         Console.WriteLine(fLine("new_dast", "Creates and starts a DAST scan [req:dast_name & dast_url,optional: linkapp_UUID/NAME]"))
-        Console.WriteLine(fLine("link_dast", "Links a DAST scan to an Application Profile [req dast_name/dast_analysis_id & linkapp_UUID/NAME"))
+        Console.WriteLine(fLine("link_dast", "Links a DAST scan to an Application Profile [req dast_name & linkapp_UUID/NAME"))
 
         Console.WriteLine(vbCrLf + "PARAMETERS:")
         Console.WriteLine("-----------")
