@@ -7,36 +7,18 @@ This small utility demonstrates basic usage of their API for AST and Security La
 
 USAGE: VCCLI action --param1 param1_value --param2 param2_value
 
+Try VCCLI HELP for list of Actions and their associated parameters.
+
 ACTIONS:
 --------
+- Produce a list of actions and parameters
 
-help                     Produces this list of actions and parameters
+- Return a summary of Security Labs student & lesson activity
 
-get_seclabs_summary      Returns a summary of Security Labs student & lesson activity
+- Return a summary of DAST analyses and scans
 
-get_dast                 Returns a summary of DAST analyses and scans
+- Return a summary of Application Profiles
 
-get_app_profiles         Returns a summary of Application Profiles
+- Create and starts a DAST scan [req:dast_name & dast_url,optional: linkapp_UUID/NAME]
 
-new_dast                 Creates and starts a DAST scan [req:dast_name & dast_url,optional: linkapp_UUID/NAME]
-
-link_dast                Links a DAST scan to an Application Profile [req dast_name & linkapp_UUID/NAME
-
-
-PARAMETERS:
------------
-
---apiID                  The Veracode API ID (if not inside C:\Users\mhorty
-
---apiKEY                 The Veracode API KEY (if not inside C:\Users\mhorty
-
---slToken                The Security Labs API KEY
-
---dast_name              Name of the DAST scan
-
---dast_url               URL used for a DAST scan
-
---linkapp_UUID           Used to link a DAST scan to a Profile using APP UUID
-
---linkapp_Name           Used to link a DAST scan to a Profile using APP NAME
-
+- Link a DAST scan to an Application Profile [req dast_name & linkapp_UUID/NAME
